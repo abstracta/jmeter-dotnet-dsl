@@ -1,0 +1,14 @@
+﻿[*.cs]
+
+csharp_style_expression_bodied_methods=when_on_single_line
+dotnet_analyzer_diagnostic.severity = error
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.IDE0008.severity = none
+dotnet_diagnostic.IDE0039.severity = none
+dotnet_diagnostic.IDE0052.severity = none
+dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.IDE0063.severity = none
+dotnet_diagnostic.IDE0065.severity = none
+dotnet_diagnostic.IDE0090.severity = none
+dotnet_diagnostic.JSON002.severity = none

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>us.abstracta.jmeter.dotnet</groupId>
+        <artifactId>jmeter-dotnet-dsl-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>jmeter-dotnet-dsl-blazemeter</artifactId>
+    <packaging>pom</packaging>
+
+    <description>This pom is only needed to be able to copy jmeter-java-dsl-blazmeter jar and its dependencies with dependency:copy-dependencies maven plugin goal</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>us.abstracta.jmeter</groupId>
+            <artifactId>jmeter-java-dsl-blazemeter</artifactId>
+            <version>${jmeter-java-dsl.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>us.abstracta.jmeter</groupId>
+                    <artifactId>jmeter-java-dsl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+</project>

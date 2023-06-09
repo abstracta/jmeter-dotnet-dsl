@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Abstracta.JmeterDsl.BlazeMeter</RootNamespace>
+    <CodeAnalysisRuleSet>../StyleCop.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AssemblyName>Abstracta.JmeterDsl.BlazeMeter</AssemblyName>
+    <PackageId>Abstracta.JmeterDsl.BlazeMeter</PackageId>
+    <Authors>Abstracta</Authors>
+    <Company>Abstracta</Company>
+    <Description>Module which allows to easily run Abstracta.JmeterDsl test plans at scale in BlazeMeter.</Description>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageTags>jmeter,performance,load,test</PackageTags>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://abstracta.github.io/jmeter-dotnet-dsl</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Version>0.1</Version>
+    <FileVersion>0.1</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\logo.png" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Abstracta.JmeterDsl\Abstracta.JmeterDsl.csproj" />
+  </ItemGroup>
+  
+  <Target Name="InstallArtifacts" BeforeTargets="BeforeBuild">
+    <Exec Command="mvn dependency:copy-dependencies -DoutputDirectory=artifacts" />
+    <ItemGroup>
+      <EmbeddedResource Include="artifacts/*.jar" />
+    </ItemGroup>
+  </Target>
+  <Target Name="CleanArtifacts" AfterTargets="Clean">
+    <RemoveDir Directories="artifacts" />
+  </Target>
+
+</Project>
