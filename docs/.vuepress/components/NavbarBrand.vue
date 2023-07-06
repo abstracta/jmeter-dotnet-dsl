@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// changed from original to include autolink to other DSL
+import AutoLink from '@theme/AutoLink.vue'
 import {
   ClientOnly,
   useRouteLocale,
@@ -51,7 +53,9 @@ const NavbarBrandLogo: FunctionalComponent = () => {
 
 <template>
   <RouterLink :to="navbarBrandLink">
-    <NavbarBrandLogo style="margin-right: 0"/><span style="font-size: 1.6rem"> .net</span><hr class="vertical-divider"/><a href="https://abstracta.github.io/jmeter-java-dsl" style="font-size: 1.6rem; color: #5599ff">.java</a>
+    <NavbarBrandLogo style="margin-right: 0"/><span style="font-size: 1.6rem"> .net</span>
     <!-- Stripped site title from original theme -->
   </RouterLink>
+  <hr class="vertical-divider"/>
+  <AutoLink :item="{link : 'https://abstracta.github.io/jmeter-java-dsl', text: '.java', style: 'font-size: 1.6rem; color: #5599ff'}"/>
 </template>
