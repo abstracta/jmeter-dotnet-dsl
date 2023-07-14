@@ -24,7 +24,6 @@ namespace Abstracta.JmeterDsl.BlazeMeter.Tests
             Console.SetOut(originalConsoleOut!);
 
         [Test]
-        [Ignore("Ignoring test since we have temporally ran out of credit")]
         public void TestInBlazeMeter()
         {
             var stats = TestPlan(
