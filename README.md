@@ -1,4 +1,4 @@
-![logo](/docs/.vuepress/public/logo.svg)
+![logo](https://raw.githubusercontent.com/abstracta/jmeter-dotnet-dsl/main/docs/.vuepress/public/logo.svg)
 
 Simple .Net API to run performance tests, using [JMeter](http://jmeter.apache.org/) as engine, in a Git and programmers friendly way. 
 
