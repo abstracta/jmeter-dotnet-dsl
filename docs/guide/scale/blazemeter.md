@@ -22,7 +22,7 @@ public class PerformanceTest
             ThreadGroup(2, 10,
                 HttpSampler("http://my.service")
             )
-        ).RunIn(new BlazeMeterEngine(System.getenv("BZ_TOKEN"))
+        ).RunIn(new BlazeMeterEngine(Environment.GetEnvironmentVariable("BZ_TOKEN"))
             .TestName("DSL test")
             .TotalUsers(500)
             .HoldFor(TimeSpan.FromMinutes(10))

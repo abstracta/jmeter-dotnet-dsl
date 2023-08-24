@@ -21,7 +21,7 @@ public class PerformanceTest
             ThreadGroup(2, 10,
                 HttpSampler("http://my.service")
             )
-        ).RunIn(new AzureEngine(System.getenv("AZURE_CREDS")) // AZURE_CREDS=tenantId:clientId:secretId
+        ).RunIn(new AzureEngine(Environment.GetEnvironmentVariable("AZURE_CREDS")) // AZURE_CREDS=tenantId:clientId:secretId
             .TestName("dsl-test")
             /* 
             This specifies the number of engine instances used to execute the test plan. 
@@ -29,7 +29,7 @@ public class PerformanceTest
             Each engine executes the test plan independently.
             */
             .Engines(2) 
-            .TestTimeout(Duration.ofMinutes(20)));
+            .TestTimeout(TimeSpan.FromMinutes(20)));
         Assert.That(stats.Overall.SampleTimePercentile99, Is.LessThan(TimeSpan.FromSeconds(5)));
     }
 }
