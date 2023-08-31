@@ -8,7 +8,7 @@ namespace Abstracta.JmeterDsl.Http
     /// <summary>
     /// Allows to configure a JMeter HTTP sampler to make HTTP requests in a test plan.
     /// </summary>
-    public class DslHttpSampler : BaseSampler
+    public class DslHttpSampler : BaseSampler<DslHttpSampler>
     {
         private readonly string _url;
         private string _method;

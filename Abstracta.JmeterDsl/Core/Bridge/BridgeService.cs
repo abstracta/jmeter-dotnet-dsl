@@ -62,6 +62,7 @@ namespace Abstracta.JmeterDsl.Core.Bridge
             var testElementConverter = new BridgedObjectConverter();
             var builder = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithTypeConverter(new EnumConverter())
                 .WithTypeConverter(testElementConverter)
                 .WithTypeConverter(new TimespanConverter());
             testElementConverter.ValueSerializer = builder.BuildValueSerializer();

@@ -5,7 +5,7 @@ namespace Abstracta.JmeterDsl.Core.ThreadGroups
     /// <summary>
     /// Represents the standard thread group test element included by JMeter.
     /// </summary>
-    public class DslThreadGroup : BaseThreadGroup
+    public class DslThreadGroup : BaseThreadGroup<DslThreadGroup>
     {
         private readonly int? _threads;
         private readonly int? _iterations;

@@ -1,6 +1,7 @@
 ﻿using System;
 using Abstracta.JmeterDsl.Core;
 using Abstracta.JmeterDsl.Core.Listeners;
+using Abstracta.JmeterDsl.Core.PostProcessors;
 using Abstracta.JmeterDsl.Core.Samplers;
 using Abstracta.JmeterDsl.Core.ThreadGroups;
 using Abstracta.JmeterDsl.Http;
@@ -153,6 +154,30 @@ namespace Abstracta.JmeterDsl
         /// <seealso cref="DummySampler(string)"/>
         public static DslDummySampler DummySampler(string name, string responseBody)
             => new DslDummySampler(name, responseBody);
+
+        /// <summary>
+        /// Builds a Regex Extractor which allows using regular expressions to extract different parts of a
+        /// sample result (request or response).
+        /// <br/>
+        /// This method provides a simple default implementation with required settings, but more settings
+        /// are provided by returned DslRegexExtractor.
+        /// <br/>
+        /// By default, when regex is not matched, no variable will be created or modified. On the other
+        /// hand when the regex matches it will by default store the first capturing group (part of
+        /// expression between parenthesis) of the first match for the regular expression.
+        /// </summary>
+        /// <param name="variableName">is the name of the variable to be used to store the extracted value to.
+        /// Additional variables <c>&lt;variableName&gt;_g&lt;groupId&gt;</c> will be created for
+        /// each regular expression capturing group (segment of regex between
+        /// parenthesis), being the group 0 the entire match of the regex.
+        /// <c>&lt;variableName&gt;_g</c> variable contains the number of matched capturing groups
+        /// (not counting the group 0).</param>
+        /// <param name="regex">regular expression used to extract part of request or response.</param>
+        /// <returns>the Regex Extractor which can be used to define additional settings to use when
+        /// extracting (like defining match number, template, etc.).</returns>
+        /// <seealso cref="DslRegexExtractor"/>
+        public static DslRegexExtractor RegexExtractor(string variableName, string regex)
+            => new DslRegexExtractor(variableName, regex);
 
         /// <summary>
         /// Builds a Simple Data Writer to write all collected results to a JTL file.

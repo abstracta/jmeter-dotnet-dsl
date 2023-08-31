@@ -7,7 +7,7 @@ namespace Abstracta.JmeterDsl.Core
     /// <summary>
     /// Represents a JMeter test plan, with associated thread groups and other children elements.
     /// </summary>
-    public class DslTestPlan : TestElementContainer<ITestPlanChild>
+    public class DslTestPlan : TestElementContainer<DslTestPlan, ITestPlanChild>
     {
         public DslTestPlan(ITestPlanChild[] children)
             : base(null, children)

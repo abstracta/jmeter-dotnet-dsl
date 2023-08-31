@@ -10,7 +10,7 @@ namespace Abstracta.JmeterDsl.Core.Samplers
     /// and response time with random value between 50 and 500 milliseconds. Additionally, emulation of
     /// response times (through sleeps) is disabled to speed up testing.
     /// </summary>
-    public class DslDummySampler : BaseSampler
+    public class DslDummySampler : BaseSampler<DslDummySampler>
     {
         private readonly string _responseBody;
         private bool? _successful;
