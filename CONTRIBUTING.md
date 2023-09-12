@@ -54,6 +54,8 @@ When a test plan runs, the engine returns an instance of [TestPlanStats](Abstrac
 
 Here we will detail the main steps and things to take into consideration when implementing a new test element, or extending an existing one.
 
+Before doing any coding, consider that the project uses Java 8, maven 3.5, .Net SDK 6+, nodejs 18+, pnpm 8+ and docker as main dependencies, so make sure that you install them beforehand. You might also install [devbox](https://www.jetpack.io/devbox/docs/) and [direnv](https://direnv.net/) and then use existing devbox configuration to setup the development environment.
+
 1. Check if you want something that is already supported by Java DSL and JMeter itself.
    * This is very important and implementing support in the .Net library for something that is already supported in Java DSL is super simple. But, implementing something that has not yet support in the JMeter Java DSL, would require you to first contribute it to Java DSL, and then to the .Net library. Implementing something that is not even supported by JMeter, would require probably even more work, but don't despair, and always ask for help or support!
    * If you need something that is already supported by Java DSL, follow previously mentioned conventions and continue reading :).
@@ -61,7 +63,7 @@ Here we will detail the main steps and things to take into consideration when im
 2. Implement tests that verify the expected behavior of the test element in a test plan execution. This way, you verify that you properly initialize JMeter properties and that your interpretation of the test element properties and behavior is right.
    * Check [DslHttpSamplerTest](Abstracta.JmeterDsl.Tests/Http/DslHttpSamplerTest.cs) for some sample test cases.
 3.  Run `dotnet build` and `dotnet test` and fix any potential code styling issues or failing tests.
-4.  Add a new section [user guide](docs/guide), by adding a new md file and proper `<!-- @include: -->` in parent section, describing the new feature. Consider running in the `docs` directory `pnpm install` and `pnpm dev` (this requires node 18+ and pnpm installed on your machine) to run a local server for docs, where you can review that new changes are properly showing.
+4.  Add a new section [user guide](docs/guide), by adding a new md file and proper `<!-- @include: -->` in parent section, describing the new feature. Consider running in the `docs` directory `pnpm install` and `pnpm dev` (this requires node 18+ and pnpm installed on your machine) to run a local server for docs, where you can review that new changes are properly showing. If you use devbox then you can use `devbox run setup` and `devbox run docs`.
 5.  Commit changes to git, using as a comment a subject line that describes general changes, and if necessary, some additional details describing the reason why the change is necessary.
 6.  Submit a pull request to the repository including a meaningful name.
 7.  Check GitHub Actions execution to verify that no test fails on the CI pipeline.

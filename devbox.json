@@ -1,0 +1,31 @@
+{
+  "packages": [
+    "maven@latest",
+    "nodejs@latest",
+    "nodePackages.pnpm@latest",
+    "temurin-bin-8@latest",
+    "dotnet-sdk@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to devbox!' > /dev/null"
+    ],
+    "scripts": {
+      "setup": [
+        "pnpm --dir docs install"
+      ],
+      "docs": [
+        "pnpm --dir docs dev"
+      ],
+      "clean": [
+        "dotnet clean"
+      ],
+      "build": [
+        "dotnet build"
+      ],
+      "test": [
+        "dotnet test"
+      ]
+    }
+  }
+}
