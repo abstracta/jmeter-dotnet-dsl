@@ -11,6 +11,6 @@
     <description>This pom is only needed to be able to copy jmeter-java-dsl jars and dependencies with dependency:copy-dependencies maven plugin goal in child projects</description>
 
     <properties>
-        <jmeter-java-dsl.version>1.20</jmeter-java-dsl.version>
+        <jmeter-java-dsl.version>1.21</jmeter-java-dsl.version>
     </properties>
 </project>

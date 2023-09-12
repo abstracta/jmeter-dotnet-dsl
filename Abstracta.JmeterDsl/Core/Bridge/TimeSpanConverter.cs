@@ -61,7 +61,8 @@ namespace Abstracta.JmeterDsl.Core.Bridge
             {
                 ret += duration.Minutes + "M";
             }
-            if (duration.Seconds > 0 || duration.Milliseconds > 0)
+            if ((duration.Hours == 0 && duration.Minutes == 0)
+                || duration.Seconds > 0 || duration.Milliseconds > 0)
             {
                 ret += duration.Seconds;
                 if (duration.Milliseconds > 0)

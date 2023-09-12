@@ -80,6 +80,38 @@ namespace Abstracta.JmeterDsl
             new DslThreadGroup(name, threads, duration, children);
 
         /// <summary>
+        /// Builds a new thread group without any thread configuration.
+        /// <br/>
+        /// This method should be used as starting point for creating complex test thread profiles (like
+        /// spike, or incremental tests) in combination with holdFor, rampTo and rampToAndHold <see cref="DslThreadGroup"/> methods.
+        /// <br/>
+        /// Eg:
+        /// <c>
+        /// ThreadGroup()
+        ///   .RampTo(10, TimeSpan.FromSeconds(10)
+        ///   .RampTo(5, TimeSpan.FromSeconds(10))
+        ///   .RampToAndHold(20, TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(10))
+        ///   .RampTo(0, TimeSpan.FromSeconds(5))
+        ///   .Children(...)
+        /// </c>
+        /// <br/>
+        /// For complex thread profiles that can't be mapped to JMeter built-in thread group element, the
+        /// DSL uses <a href="https://jmeter-plugins.org/wiki/UltimateThreadGroup/">Ultimate Thread Group plugin</a>
+        /// </summary>
+        /// <returns>the thread group instance</returns>
+        public static DslThreadGroup ThreadGroup() =>
+            new DslThreadGroup(null);
+
+        /// <summary>
+        /// Same as <see cref="ThreadGroup()"/> but allowing to set a name on the thread group.
+        /// <br/>
+        /// Setting a proper name allows to properly identify the requests generated in each thread group.
+        /// </summary>
+        /// <seealso cref="ThreadGroup()"/>
+        public static DslThreadGroup ThreadGroup(string name) =>
+            new DslThreadGroup(name);
+
+        /// <summary>
         /// Builds an HTTP Request sampler to sample HTTP requests.
         /// </summary>
         /// <param name="url">Specifies URL the HTTP Request sampler will hit.</param>

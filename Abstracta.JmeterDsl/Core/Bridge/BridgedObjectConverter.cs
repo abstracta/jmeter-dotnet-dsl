@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using System.Reflection;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -35,19 +36,23 @@ namespace Abstracta.JmeterDsl.Core.Bridge
             }
             else
             {
+                // this set is used to avoid processing fields that have been hidden by subclass members (using new keyword)
+                ISet<string> processedFields = new HashSet<string>();
                 foreach (FieldInfo field in fields)
                 {
-                    if (!IsIgnoredField(field))
+                    if (!processedFields.Contains(field.Name) && !IsIgnoredField(field))
                     {
                         WriteFieldYaml(field, field.GetValue(value), emitter);
                     }
+                    processedFields.Add(field.Name);
                 }
             }
             emitter.Emit(new MappingEnd());
         }
 
         private string BuildTagName(Type valueType) =>
-            "!" + (IsCoreElement(valueType) ? BuildSimpleTagName(valueType) : BuildCompleteTagName(valueType));
+            "!" + (IsCoreElement(valueType) ? BuildSimpleTagName(valueType)
+                : BuildCompleteTagName(valueType));
 
         private bool IsCoreElement(Type valueType)
         {
@@ -117,7 +122,7 @@ namespace Abstracta.JmeterDsl.Core.Bridge
 
             // removing first character since fields are prefixed with underscore
             emitter.Emit(new Scalar(field.Name.Substring(1)));
-            ValueSerializer.SerializeValue(emitter, value, field.FieldType);
+            ValueSerializer.SerializeValue(emitter, value, field.FieldType == typeof(object) ? value.GetType() : field.FieldType);
         }
     }
 }
