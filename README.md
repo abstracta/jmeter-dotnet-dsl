@@ -13,7 +13,7 @@ Please join [discord server](https://discord.gg/WNSn5hqmSd) or create GitHub [is
 Add the package to your project:
 
 ```powershell
-dotnet add package Abstracta.JmeterDsl --version 0.2
+dotnet add package Abstracta.JmeterDsl --version 0.3
 ``` 
 
 Here is a simple example test using [Nunit](https://nunit.org/)+ with 2 threads/users iterating 10 times each to send HTTP POST requests with a JSON body to `http://my.service`:

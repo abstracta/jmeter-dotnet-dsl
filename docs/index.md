@@ -21,7 +21,7 @@ footerHtml: true
 Add the package to your project:
 
 ```powershell
-dotnet add package Abstracta.JmeterDsl --version 0.2
+dotnet add package Abstracta.JmeterDsl --version 0.3
 ```
 
 Create performance test:
