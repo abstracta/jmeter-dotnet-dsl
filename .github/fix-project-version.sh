@@ -14,9 +14,9 @@ update_file_versions() {
   if [ $(echo "${BASE_VERSION}" | awk -F"." '{print NF-1}') == 1 ]; then
     ASSEMBLY_VERSION="${ASSEMBLY_VERSION}.0"
   fi
-  sed -i "s/<AssemblyVersion>[0-9.]\+<\/AssemblyVersion>/<AssemblyVersion>${ASSEMBLY_VERSION}<\/AssemblyVersion>/g" "${FILE}"
-  sed -i "s/<Version>[0-9.]\+<\/Version>/<Version>${VERSION}<\/Version>/g" "${FILE}"
-  sed -i "s/<FileVersion>[0-9.]\+<\/FileVersion>/<FileVersion>${BASE_VERSION}<\/FileVersion>/g" "${FILE}"
+  sed -i "s/<AssemblyVersion>[^<]\+<\/AssemblyVersion>/<AssemblyVersion>${ASSEMBLY_VERSION}<\/AssemblyVersion>/g" "${FILE}"
+  sed -i "s/<Version>[^<]\+<\/Version>/<Version>${VERSION}<\/Version>/g" "${FILE}"
+  sed -i "s/<FileVersion>[^<]\+<\/FileVersion>/<FileVersion>${BASE_VERSION}<\/FileVersion>/g" "${FILE}"
 }
 
 find . -name "*.csproj" | while read DOC_FILE; do
