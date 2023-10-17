@@ -7,7 +7,7 @@ namespace Abstracta.JmeterDsl.Core.TestElements
     /// </summary>
     public abstract class BaseTestElement : IDslTestElement
     {
-        private readonly string _name;
+        protected readonly string _name;
 
         public BaseTestElement(string name)
         {

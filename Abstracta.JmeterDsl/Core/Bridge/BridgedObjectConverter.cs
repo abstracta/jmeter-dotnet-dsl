@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 using System.Reflection;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -30,6 +30,7 @@ namespace Abstracta.JmeterDsl.Core.Bridge
             var tagName = BuildTagName(valueType);
             emitter.Emit(new MappingStart(null, tagName, false, MappingStyle.Any));
             var fields = valueType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            fields = fields.Where(f => !(f.Name == "_name" && f.GetValue(value) == null)).ToArray();
             if (fields.Length == 1 && typeof(IDictionary<string, string>).IsAssignableFrom(fields[0].FieldType))
             {
                 WriteDictionaryYaml((IDictionary<string, string>)fields[0].GetValue(value), emitter);
