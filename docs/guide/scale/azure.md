@@ -3,7 +3,7 @@
 To use [Azure Load Testing](https://azure.microsoft.com/en-us/products/load-testing/) to execute your test plans at scale is as easy as including the following package to your project:
 
 ```powershell
-dotnet add package Abstracta.JmeterDsl.Azure --version 0.3.1
+dotnet add package Abstracta.JmeterDsl.Azure --version 0.3.2
 ```
 
 And using the provided engine like this:
