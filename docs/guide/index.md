@@ -21,4 +21,5 @@ For an intro to JMeter concepts and components, you can check [JMeter official d
 <!-- @include: debugging/index.md -->
 <!-- @include: reporting/index.md -->
 <!-- @include: response-processing/index.md -->
+<!-- @include: request-generation/index.md -->
 <!-- @include: protocols/index.md -->
