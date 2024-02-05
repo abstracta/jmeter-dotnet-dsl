@@ -169,6 +169,7 @@ namespace Abstracta.JmeterDsl.Core.Bridge
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
+                UseShellExecute = false,
             };
             process.StartInfo = startInfo;
             process.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
