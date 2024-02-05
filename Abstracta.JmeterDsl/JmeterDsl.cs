@@ -4,6 +4,7 @@ using Abstracta.JmeterDsl.Core.Configs;
 using Abstracta.JmeterDsl.Core.Controllers;
 using Abstracta.JmeterDsl.Core.Listeners;
 using Abstracta.JmeterDsl.Core.PostProcessors;
+using Abstracta.JmeterDsl.Core.PreProcessors;
 using Abstracta.JmeterDsl.Core.Samplers;
 using Abstracta.JmeterDsl.Core.ThreadGroups;
 using Abstracta.JmeterDsl.Http;
@@ -245,6 +246,30 @@ namespace Abstracta.JmeterDsl
         /// <seealso cref="DummySampler(string)"/>
         public static DslDummySampler DummySampler(string name, string responseBody)
             => new DslDummySampler(name, responseBody);
+
+        /// <summary>
+        /// Builds a JSR223 Pre Processor which allows including custom logic to modify requests.
+        /// <br/>
+        /// This preprocessor is very powerful, and lets you alter request parameters, jmeter context and
+        /// implement any kind of custom logic that you may think.
+        /// </summary>
+        /// <param name="script">contains the script to be executed by the preprocessor. By default, this will be
+        ///               a groovy script, but you can change it by setting the language property in the
+        ///               returned post processor.</param>
+        /// <returns>the JSR223 Pre Processor instance</returns>
+        /// <seealso cref="DslJsr223PreProcessor"/>
+        public static DslJsr223PreProcessor Jsr223PreProcessor(string script) =>
+            Jsr223PreProcessor(null, script);
+
+        /// <summary>
+        /// Same as <see cref="Jsr223PreProcessor(string)"/> but allowing to set a name on the preprocessor.
+        /// <br/>
+        /// The name is used as logger name which allows configuring log level, appender, etc., for the
+        /// preprocessor.
+        /// </summary>
+        /// <seealso cref="Jsr223PreProcessor(string)"/>
+        public static DslJsr223PreProcessor Jsr223PreProcessor(string name, string script) =>
+            new DslJsr223PreProcessor(name, script);
 
         /// <summary>
         /// Builds a Regex Extractor which allows using regular expressions to extract different parts of a
