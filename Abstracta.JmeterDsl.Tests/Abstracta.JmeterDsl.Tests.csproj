@@ -29,19 +29,10 @@
     <ProjectReference Include="..\Abstracta.JmeterDsl\Abstracta.JmeterDsl.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Http\" />
-    <None Remove="Core\" />
-    <None Remove="Core\Listeners\" />
-    <None Remove="Core\ThreadGroups\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Http\" />
-    <Folder Include="Core\" />
-    <Folder Include="Core\Listeners\" />
-    <Folder Include="Core\ThreadGroups\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="log4j2.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Core\Configs\data.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

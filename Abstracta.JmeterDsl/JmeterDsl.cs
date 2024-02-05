@@ -1,5 +1,6 @@
 ﻿using System;
 using Abstracta.JmeterDsl.Core;
+using Abstracta.JmeterDsl.Core.Configs;
 using Abstracta.JmeterDsl.Core.Controllers;
 using Abstracta.JmeterDsl.Core.Listeners;
 using Abstracta.JmeterDsl.Core.PostProcessors;
@@ -322,5 +323,32 @@ namespace Abstracta.JmeterDsl
         /// <seealso cref="Core.Listeners.ResultsTreeVisualizer"/>
         public static ResultsTreeVisualizer ResultsTreeVisualizer() =>
             new ResultsTreeVisualizer();
+
+        /// <summary>
+        /// Builds a CSV Data Set which allows loading from a CSV file variables to be used in test plan.
+        /// <br/>
+        /// This allows to store for example in a CSV file one line for each user credentials, and then in
+        /// the test plan be able to use all the credentials to test with different users.
+        /// <br/>
+        /// By default, the CSV data set will read comma separated values, use first row as name of the
+        /// generated variables, restart from beginning when csv entries are exhausted and will read a new
+        /// line of CSV for each thread and iteration.
+        /// <br/>
+        /// E.g: If you have a csv with 2 entries and a test plan with two threads, iterating 2 times each,
+        /// you might get (since threads run in parallel, the assignment is not deterministic) following
+        /// assignment of rows:
+        /// <br/>
+        /// <pre>
+        /// thread 1, row 1
+        /// thread 2, row 2
+        /// thread 2, row 1
+        /// thread 1, row 2
+        /// </pre>
+        /// </summary>
+        /// <param name="csvFile">path to the CSV file to read the data from.</param>
+        /// <returns>the CSV Data Set instance for further configuration and usage.</returns>
+        /// <seealso cref="DslCsvDataSet"/>
+        public static DslCsvDataSet CsvDataSet(string csvFile) =>
+            new DslCsvDataSet(csvFile);
     }
 }
