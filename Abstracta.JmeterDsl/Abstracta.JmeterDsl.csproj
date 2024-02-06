@@ -20,7 +20,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AssemblyVersion>0.4.0.0</AssemblyVersion>
-    <Version>0.4-alpha1</Version>
+    <Version>0.4</Version>
     <FileVersion>0.4</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
