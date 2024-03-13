@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: remote_test
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 6
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 8
+          java-version: 11
           cache: maven
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - uses: pnpm/action-setup@v2
+          node-version: '20'
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
       - name: check version
@@ -40,7 +40,7 @@ jobs:
       - name: update docs version
         run: .github/fix-docs-version.sh ${{ inputs.version }}
       - name: commit release version
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: '[skip ci] Set release version'
           branch: main
@@ -73,7 +73,7 @@ jobs:
       - name: update to next ALPHA version
         run: .github/fix-project-version.sh ${{ env.ALPHA_VERSION }}
       - name: commit ALPHA version
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: '[skip ci] Set ALPHA version'
           branch: main
@@ -82,7 +82,7 @@ jobs:
         run: .github/vuepress-deploy.sh
         env:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: abstracta/jmeter-dotnet-dsl-sample
           path: jmeter-dotnet-dsl-sample
