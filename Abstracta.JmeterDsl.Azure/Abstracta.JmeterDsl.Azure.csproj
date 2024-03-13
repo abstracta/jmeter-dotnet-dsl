@@ -20,9 +20,9 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AssemblyVersion>0.5.0.0</AssemblyVersion>
-    <Version>0.5</Version>
-    <FileVersion>0.5</FileVersion>
+    <AssemblyVersion>0.6.0.0</AssemblyVersion>
+    <Version>0.6-alpha1</Version>
+    <FileVersion>0.6</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
