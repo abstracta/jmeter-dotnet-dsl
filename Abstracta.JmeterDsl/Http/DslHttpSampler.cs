@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Abstracta.JmeterDsl.Core.Bridge;
 using Abstracta.JmeterDsl.Core.Samplers;
 
 namespace Abstracta.JmeterDsl.Http
@@ -11,6 +14,7 @@ namespace Abstracta.JmeterDsl.Http
     public class DslHttpSampler : BaseSampler<DslHttpSampler>
     {
         private readonly string _url;
+        private readonly List<HttpSamplerProperty> __propsList = new List<HttpSamplerProperty>();
         private string _method;
         private string _body;
 
@@ -64,6 +68,82 @@ namespace Abstracta.JmeterDsl.Http
             return this;
         }
 
+        /// <summary>
+        /// Specifies a file to be sent as body of the request.
+        /// <br/>
+        /// This method is useful to send binary data in request (eg: uploading an image to a server).
+        /// </summary>
+        /// <param name="filePath">is path to the file to be sent as request body.</param>
+        /// <returns>the sampler for further configuration or usage.</returns>
+        public DslHttpSampler BodyFile(string filePath)
+        {
+            __propsList.Add(new DslBodyFile(filePath));
+            return this;
+        }
+
+        /// <summary>
+        /// Allows specifying a query parameter or url encoded form body parameter.
+        /// <br/>
+        /// JMeter will automatically URL encode provided parameters names and values. Use
+        /// <see cref="RawParam(string, string)"/> to send parameters values which are already encoded and
+        /// should be sent as is by JMeter.
+        /// <br/>
+        /// JMeter will use provided parameter in query string if method is GET, DELETE or OPTIONS,
+        /// otherwise it will use them in url encoded form body.
+        /// <br/>
+        /// If you set a parameter with empty string name, it results in same behavior as using
+        /// <see cref="Body(string)"/> method. In general, you either use body function or parameters
+        /// functions, but don't use both of them in same sampler.
+        /// </summary>
+        /// <param name="name">specifies the name of the parameter.</param>
+        /// <param name="value">specifies the value of the parameter to be URL encoded to include in URL</param>
+        /// <returns>the sampler for further configuration or usage.</returns>
+        public DslHttpSampler Param(string name, string value)
+        {
+            __propsList.Add(new DslParam(name, value));
+            return this;
+        }
+
+        /// <summary>
+        /// Same as <see cref="Param(string, string)"/> but param name and value will be sent with no additional
+        /// encoding.
+        /// </summary>
+        /// <see cref="Param(string, string)"/>
+        public DslHttpSampler RawParam(string name, string value)
+        {
+            __propsList.Add(new DslRawParam(name, value));
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies a part of a multipart form body.
+        /// <br/>
+        /// In general, samplers should not use this method in combination with
+        /// <see cref="Param(string, string)"/> or <see cref="RawParam(string, string)"/>.
+        /// </summary>
+        /// <param name="name">specifies the name of the part.</param>
+        /// <param name="value">specifies the string to be sent in the part.</param>
+        /// <param name="contentType">specifies the content-type associated to the part.</param>
+        /// <returns>the sampler for further configuration or usage.</returns>
+        public DslHttpSampler BodyPart(string name, string value, MediaTypeHeaderValue contentType)
+        {
+            __propsList.Add(new DslBodyPart(name, value, contentType.ToString()));
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies a file to be sent in a multipart form body.
+        /// </summary>
+        /// <param name="name">is the name to be assigned to the file part.</param>
+        /// <param name="filePath">is path to the file to be sent in the multipart form body.</param>
+        /// <param name="contentType">the content type associated to the part.</param>
+        /// <returns>the sampler for further configuration or usage.</returns>
+        public DslHttpSampler BodyFilePart(string name, string filePath, MediaTypeHeaderValue contentType)
+        {
+            __propsList.Add(new DslBodyFilePart(name, filePath, contentType.ToString()));
+            return this;
+        }
+
         private HttpHeaders FindHeaders()
         {
             var ret = (from c in _children
@@ -90,6 +170,66 @@ namespace Abstracta.JmeterDsl.Http
         {
             FindHeaders().Header(name, value);
             return this;
+        }
+
+        internal abstract class HttpSamplerProperty : IDslProperty
+        {
+            public void ShowInGui() => throw new NotImplementedException();
+        }
+
+        internal class DslBodyFile : HttpSamplerProperty
+        {
+            internal readonly string _filePath;
+
+            public DslBodyFile(string filePath)
+            {
+                _filePath = filePath;
+            }
+        }
+
+        internal class DslParam : HttpSamplerProperty
+        {
+            internal readonly string _name;
+            internal readonly string _value;
+
+            public DslParam(string name, string value)
+            {
+                _name = name;
+                _value = value;
+            }
+        }
+
+        internal class DslRawParam : DslParam
+        {
+            public DslRawParam(string name, string value)
+                : base(name, value)
+            {
+            }
+        }
+
+        internal class DslBodyPart : DslParam
+        {
+            internal readonly string _contentType;
+
+            public DslBodyPart(string name, string value, string contentType)
+                : base(name, value)
+            {
+                _contentType = contentType;
+            }
+        }
+
+        internal class DslBodyFilePart : HttpSamplerProperty
+        {
+            internal readonly string _name;
+            internal readonly string _filePath;
+            internal readonly string _contentType;
+
+            public DslBodyFilePart(string name, string filePath, string contentType)
+            {
+                _name = name;
+                _filePath = filePath;
+                _contentType = contentType;
+            }
         }
     }
 }

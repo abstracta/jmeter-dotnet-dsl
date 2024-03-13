@@ -5,5 +5,7 @@ Throughout this guide, several examples have been shown for simple cases of HTTP
 Here we show some of them, but check [JmeterDsl](/Abstracta.JmeterDsl/JmeterDsl.cs) and [DslHttpSampler](/Abstracta.JmeterDsl/Http/DslHttpSampler.cs) to explore all available features.
 
 <!-- @include: methods-and-body.md -->
+<!-- @include: parameters.md -->
 <!-- @include: headers.md -->
+<!-- @include: multipart.md -->
 <!-- @include: cookies-and-cache.md -->

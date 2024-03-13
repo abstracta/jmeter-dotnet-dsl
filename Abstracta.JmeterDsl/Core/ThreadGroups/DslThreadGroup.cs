@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Abstracta.JmeterDsl.Core.Bridge;
 using YamlDotNet.Serialization;
 
 namespace Abstracta.JmeterDsl.Core.ThreadGroups
@@ -327,7 +328,7 @@ namespace Abstracta.JmeterDsl.Core.ThreadGroups
         public new DslThreadGroup Children(params IThreadGroupChild[] children) =>
             base.Children(children);
 
-        internal abstract class Stage : IDslTestElement
+        internal abstract class Stage : IDslProperty
         {
             internal readonly object _threadCount;
             internal readonly object _duration;

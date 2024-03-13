@@ -1,5 +1,9 @@
-﻿using System.Net.Http.Headers;
+﻿using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mime;
+using System.Text.RegularExpressions;
+using System.Web;
 using WireMock.FluentAssertions;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -11,6 +15,9 @@ namespace Abstracta.JmeterDsl.Http
 
     public class DslHttpSamplerTest
     {
+        private static readonly string _contentTypeHeader = "Content-Type";
+        private static readonly string _multipartBoundaryPattern = "[\\w-]+";
+        private static readonly string _crln = "\r\n";
         private WireMockServer _wiremock;
 
         [SetUp]
@@ -54,7 +61,7 @@ namespace Abstracta.JmeterDsl.Http
                 .HaveReceivedACall()
                 .UsingPost()
                 .And
-                .WithHeader("Content-Type", "application/json")
+                .WithHeader(_contentTypeHeader, "application/json")
                 .And
                 .WithHeader(customHeaderName, customHeaderValue)
                 .And
@@ -135,5 +142,71 @@ namespace Abstracta.JmeterDsl.Http
         */
         private HttpHeaders BuildHeadersToFixHttpCaching() =>
             HttpHeaders().Header("User-Agent", "jmeter-java-dsl");
+
+        [Test]
+        public void ShouldSendQueryParametersWhenGetRequestWithParameters()
+        {
+            var param1Name = "par+am1";
+            var param1Value = "MY+VALUE";
+            var param2Name = "par+am2";
+            var param2Value = "OTHER+VALUE";
+            TestPlan(
+                    ThreadGroup(1, 1,
+                        HttpSampler(_wiremock.Url)
+                            .Param(param1Name, param1Value)
+                            .RawParam(param2Name, param2Value)
+                    )
+                ).Run();
+            _wiremock.Should()
+                .HaveReceivedACall()
+                .AtUrl(_wiremock.Url + "/?" + HttpUtility.UrlEncode(param1Name) + "=" + HttpUtility.UrlEncode(param1Value) + "&" + param2Name + "=" + param2Value);
+        }
+
+        [Test]
+        public void ShouldSendMultiPartFormWhenPostRequestWithBodyParts()
+        {
+            var part1Name = "part1";
+            var part1Value = "value1";
+            var part1Encoding = MediaTypeHeaderValue.Parse(MediaTypeNames.Text.Plain + "; charset=US-ASCII");
+            var part2Name = "part2";
+            var part2File = "Http/sample.xml";
+            var part2Encoding = new MediaTypeHeaderValue(MediaTypeNames.Text.Xml);
+
+            TestPlan(
+                ThreadGroup(1, 1,
+                    HttpSampler(_wiremock.Url)
+                        .Method(HttpMethod.Post.Method)
+                        .BodyPart(part1Name, part1Value, part1Encoding)
+                        .BodyFilePart(part2Name, part2File, part2Encoding)
+                )
+            ).Run();
+            _wiremock.Should()
+                .HaveReceivedACall()
+                .UsingPost()
+                .And
+                .WithHeader(_contentTypeHeader, new Regex("multipart/form-data; boundary=" + _multipartBoundaryPattern))
+                .And
+                .WithBody(new Regex(BuildMultiPartBodyPattern(part1Name, part1Value, part1Encoding, part2Name, part2File, part2Encoding)));
+        }
+
+        private string BuildMultiPartBodyPattern(string part1Name, string part1Value, MediaTypeHeaderValue part1Encoding, string part2Name, string part2File, MediaTypeHeaderValue part2Encoding)
+        {
+            var separatorPattern = "--" + _multipartBoundaryPattern;
+            return separatorPattern + _crln
+                + Regex.Escape(BuildBodyPart(part1Name, null, part1Value, part1Encoding, "8bit"))
+                + separatorPattern + _crln
+                + Regex.Escape(BuildBodyPart(part2Name, Path.GetFileName(part2File), File.ReadAllText(part2File), part2Encoding, "binary"))
+                + separatorPattern + "--" + _crln;
+        }
+
+        private string BuildBodyPart(string name, string fileName, string value, MediaTypeHeaderValue contentType, string transferEncoding)
+        {
+            return "Content-Disposition: form-data; name=\"" + name + "\""
+                + (fileName != null ? "; filename=\"" + fileName + "\"" : string.Empty) + _crln
+                + "Content-Type" + ": " + contentType + _crln
+                + "Content-Transfer-Encoding: " + transferEncoding + _crln
+                + _crln
+                + value + _crln;
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Abstracta.JmeterDsl.Core.Bridge
 
         public bool Accepts(Type type) =>
             typeof(IDslTestElement).IsAssignableFrom(type)
+            || typeof(IDslProperty).IsAssignableFrom(type)
             || typeof(IDslJmeterEngine).IsAssignableFrom(type)
             || typeof(TestPlanExecution).IsAssignableFrom(type);
 
