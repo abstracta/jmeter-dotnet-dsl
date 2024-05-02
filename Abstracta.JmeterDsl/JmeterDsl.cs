@@ -1,5 +1,6 @@
 ﻿using System;
 using Abstracta.JmeterDsl.Core;
+using Abstracta.JmeterDsl.Core.Assertions;
 using Abstracta.JmeterDsl.Core.Configs;
 using Abstracta.JmeterDsl.Core.Controllers;
 using Abstracta.JmeterDsl.Core.Listeners;
@@ -294,6 +295,39 @@ namespace Abstracta.JmeterDsl
         /// <seealso cref="DslRegexExtractor"/>
         public static DslRegexExtractor RegexExtractor(string variableName, string regex)
             => new DslRegexExtractor(variableName, regex);
+
+        /// <summary>
+        /// Builds a Response Assertion to be able to check that obtained sample result is the expected
+        /// one.
+        /// <br/>
+        /// JMeter by default uses repose codes (eg: 4xx and 5xx HTTP response codes are error codes) to
+        /// determine if a request was success or not, but in some cases this might not be enough or
+        /// correct. In some cases applications might not behave in this way, for example, they might
+        /// return a 200 HTTP status code but with an error message in the body, or the response might be a
+        /// success one, but the information contained within the response is not the expected one to
+        /// continue executing the test. In such scenarios you can use response assertions to properly
+        /// verify your assumptions before continuing with next request in the test plan.
+        /// <br/>
+        /// By default, response assertion will use the response body of the main sample result (not sub
+        /// samples as redirects, or embedded resources) to check the specified criteria (substring match,
+        /// entire string equality, contained regex or entire regex match) against.
+        /// </summary>
+        /// <returns>the created Response Assertion which should be modified to apply the proper criteria.
+        /// Check <see cref="DslResponseAssertion"/> for all available options.</returns>
+        /// <seealso cref="DslResponseAssertion"/>
+        public static DslResponseAssertion ResponseAssertion() =>
+            new DslResponseAssertion(null);
+
+        /// <summary>
+        /// Same as <see cref="ResponseAssertion()"/> but allowing to set a name on the assertion, which can be
+        /// later used to identify assertion results and differentiate it from other assertions.
+        /// </summary>
+        /// <param name="name">is the name to be assigned to the assertion</param>
+        /// <returns>the created Response Assertion which should be modified to apply the proper criteria.
+        /// Check <see cref="DslResponseAssertion"/> for all available options.</returns>
+        /// <seealso cref="DslResponseAssertion"/>
+        public static DslResponseAssertion ResponseAssertion(string name) =>
+            new DslResponseAssertion(name);
 
         /// <summary>
         /// Builds a Simple Data Writer to write all collected results to a JTL file.
