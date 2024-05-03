@@ -8,6 +8,7 @@ using Abstracta.JmeterDsl.Core.PostProcessors;
 using Abstracta.JmeterDsl.Core.PreProcessors;
 using Abstracta.JmeterDsl.Core.Samplers;
 using Abstracta.JmeterDsl.Core.ThreadGroups;
+using Abstracta.JmeterDsl.Core.Timers;
 using Abstracta.JmeterDsl.Http;
 
 namespace Abstracta.JmeterDsl
@@ -114,6 +115,43 @@ namespace Abstracta.JmeterDsl
         /// <seealso cref="ThreadGroup()"/>
         public static DslThreadGroup ThreadGroup(string name) =>
             new DslThreadGroup(name);
+
+        /// <summary>
+        /// Builds a new transaction controller with the given name.
+        /// </summary>
+        /// <param name="name">specifies the name to identify the transaction.</param>
+        /// <param name="children">contains the test elements that will be contained within the transaction.</param>
+        /// <returns>the transaction instance.</returns>
+        /// <seealso cref="DslTransactionController"/>
+        public static DslTransactionController Transaction(string name, params IThreadGroupChild[] children) =>
+            new DslTransactionController(name, children);
+
+        /// <summary>
+        /// Builds a new simple controller with the given name.
+        /// <br/>
+        /// Simple controllers are good for defining test plan scopes, without having to create a
+        /// transaction (which generates a sample result). For example, to apply configs, assertions,
+        /// timers, listeners, post- and pre-processors to only part of the test plan (certain samplers).
+        /// <br/>
+        /// Additionally, they are a handy way of creating methods that return certain part of a test plan
+        /// (inside a simple controller) and then directly inject the method returned controller in an
+        /// existing test plan.
+        /// </summary>
+        /// <param name="children">contains the test elements that will be contained within the controller.</param>
+        /// <returns>the controller instance.</returns>
+        /// <seealso cref="DslSimpleController"/>
+        public static DslSimpleController SimpleController(params IThreadGroupChild[] children) =>
+            SimpleController(null, children);
+
+        /// <summary>
+        /// Same as <see cref="SimpleController(IThreadGroupChild[])"/> but allowing to set a name.
+        /// <br/>
+        /// In this scenario, the name has no functional usage during test plan execution, but it can ease
+        /// JMX test plan review as to keep sections of the test plan well identified.
+        /// </summary>
+        /// <seealso cref="SimpleController(IThreadGroupChild[])"/>
+        public static DslSimpleController SimpleController(string name, params IThreadGroupChild[] children) =>
+            new DslSimpleController(name, children);
 
         /// <summary>
         /// Builds a Loop Controller that allows to run specific number of times the given children in each
@@ -382,6 +420,82 @@ namespace Abstracta.JmeterDsl
         /// <seealso cref="Core.Listeners.ResultsTreeVisualizer"/>
         public static ResultsTreeVisualizer ResultsTreeVisualizer() =>
             new ResultsTreeVisualizer();
+
+        /// <summary>
+        /// Builds a Flow Control Action that pauses the current thread for the given duration.
+        /// <br/>
+        /// This is an alternative to timers, which eases adding just one pause instead of applying a pause
+        /// to all elements in the scope of a timer.
+        /// </summary>
+        /// <param name="duration">specifies the duration for the pause.</param>
+        /// <returns>the test element for usage in a test plan</returns>
+        public static DslFlowControlAction ThreadPause(TimeSpan duration) =>
+            ThreadPause(duration.TotalMilliseconds.ToString());
+
+        /// <summary>
+        /// Same as <see cref="ThreadPause(TimeSpan)"/> but allowing to use JMeter expressions for the
+        /// duration.
+        /// <br/>
+        /// For example, you can set a delay depending on the amount of time taken in last sample with
+        /// something like <c>${__groovy(5000 - prev.time)}</c>.
+        /// </summary>
+        /// <param name="duration">JMeter expression that evaluates to the number of milliseconds to
+        /// pause the thread.</param>
+        /// <returns>the test element for usage in a test plan</returns>
+        public static DslFlowControlAction ThreadPause(string duration) =>
+            DslFlowControlAction.PauseThread(duration);
+
+        /// <summary>
+        /// Builds a Constant Timer which pauses the thread with for a given duration.
+        /// </summary>
+        /// <param name="duration">specifies the duration for the timer to wait.</param>
+        /// <returns>the timer for usage in test plan.</returns>
+        public static DslConstantTimer ConstantTimer(TimeSpan duration) =>
+            ConstantTimer(duration.TotalMilliseconds.ToString());
+
+        /// <summary>
+        /// Same as <see cref="ConstantTimer(TimeSpan)"/> but allowing to use JMeter expression.
+        /// <br/>
+        /// For example, you can set a delay depending on the amount of time taken in last sample with
+        /// something like <c>${__groovy(5000 - prev.time)}</c>.
+        /// </summary>
+        /// <param name="duration">JMeter expression that evaluates to the number of milliseconds to
+        /// pause the thread.</param>
+        /// <returns>the timer for usage in test plan.</returns>
+        public static DslConstantTimer ConstantTimer(string duration) =>
+            new DslConstantTimer(duration);
+
+        /// <summary>
+        /// Builds a Uniform Random Timer which pauses the thread with a random time with uniform
+        /// distribution.
+        /// <br/>
+        /// The timer uses the minimum and maximum durations to define the range of values to be used in
+        /// the uniformly distributed selected value. These values differ from the parameters used in
+        /// JMeter Uniform Random Timer element to make it simpler for general users to use. The generated
+        /// JMeter test element uses as "constant delay offset" the minimum value, and as "maximum random
+        /// delay" (maximum - minimum) value.
+        /// <br/>
+        /// EXAMPLE: wait at least 3 seconds and maximum of 10 seconds
+        /// {@code uniformRandomTimer(Duration.ofSeconds(3), Duration.ofSeconds(10))}
+        /// </summary>
+        /// <param name="minimum">is used to set the constant delay of the Uniform Random Timer.</param>
+        /// <param name="maximum">is used to set the maximum time the timer will be paused and will be used to
+        ///                obtain the random delay from the result of (maximum - minimum).</param>
+        /// <returns>The Uniform Random Timer instance</returns>
+        /// <see cref="DslUniformRandomTimer"/>
+        public static DslUniformRandomTimer UniformRandomTimer(TimeSpan minimum, TimeSpan maximum) =>
+            new DslUniformRandomTimer(minimum, maximum);
+
+        /// <summary>
+        /// Builds a Synchronizing Timer that allows synchronizing samples to be sent all at once.
+        /// <br/>
+        /// This timer is useful when you need to send requests in simultaneous batches, as a way to asure
+        /// the system under test gets the requests all at the same time.
+        /// </summary>
+        /// <returns>the timer for usage in a test plan.</returns>
+        /// <see cref="DslSynchronizingTimer"/>
+        public static DslSynchronizingTimer SynchronizingTimer() =>
+            new DslSynchronizingTimer();
 
         /// <summary>
         /// Builds a CSV Data Set which allows loading from a CSV file variables to be used in test plan.

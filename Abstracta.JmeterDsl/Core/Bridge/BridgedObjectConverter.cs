@@ -52,9 +52,15 @@ namespace Abstracta.JmeterDsl.Core.Bridge
             emitter.Emit(new MappingEnd());
         }
 
-        private string BuildTagName(Type valueType) =>
-            "!" + (IsCoreElement(valueType) ? BuildSimpleTagName(valueType)
-                : BuildCompleteTagName(valueType));
+        private string BuildTagName(Type valueType)
+        {
+            var ret = valueType.GetCustomAttribute<YamlTypeAttribute>()?.TagName;
+            if (ret == null)
+            {
+                ret = IsCoreElement(valueType) ? BuildSimpleTagName(valueType) : BuildCompleteTagName(valueType);
+            }
+            return "!" + ret;
+        }
 
         private bool IsCoreElement(Type valueType)
         {
