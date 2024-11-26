@@ -61,6 +61,24 @@ unnecessary waits when there is some unexpected issue with BlazeMeter execution.
 :::
 
 ::: tip
+By default `BlazeMeterEngine` will run tests from default location (most of the times `us-east4-a`). But in some scenarios you might want to change the location, or even run the test from multiple locations.
+
+Here is an example how you can easily set this up:
+
+```cs
+TestPlan(
+    ThreadGroup(300, TimeSpan.FromMinutes(5), // 300 total users for 5 minutes
+      HttpSampler(SAMPLE_LABEL, "https://myservice")
+    )
+).RunIn(new BlazeMeterEngine(Environment.GetEnvironmentVariable("BZ_TOKEN"))
+    .Location(BlazeMeterLocation.GCP_SAO_PAULO, 30) // 30% = 90 users will run in Google Cloud Platform at Sao Paulo
+    .Location("MyPrivateLocation", 70) // 70% = 210 users will run in MyPrivateLocation named private location
+    .TestTimeout(TimeSpan.FromMinutes(10)));
+```
+
+:::
+
+::: tip
 In case you want to get debug logs for HTTP calls to BlazeMeter API, you can include the following setting to an existing `log4j2.xml` configuration file:
 ```xml
 <Logger name="us.abstracta.jmeter.javadsl.blazemeter.BlazeMeterClient" level="DEBUG"/>

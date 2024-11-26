@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Abstracta.JmeterDsl.Core;
+using Abstracta.JmeterDsl.Core.Bridge;
 using Abstracta.JmeterDsl.Core.Engines;
 
 namespace Abstracta.JmeterDsl.BlazeMeter
@@ -20,6 +22,8 @@ namespace Abstracta.JmeterDsl.BlazeMeter
         private TimeSpan? _holdFor;
         private int? _threadsPerEngine;
         private bool? _useDebugRun;
+
+        private readonly List<DslLocation> __propsList = new List<DslLocation>();
 
         /// <summary>
         /// Builds a new instance of BlazeMeterEngine with provided authentication token.
@@ -239,6 +243,42 @@ namespace Abstracta.JmeterDsl.BlazeMeter
         }
 
         /// <summary>
+        /// Allows specifying BlazeMeter locations where the test plan will run.
+        /// <br/>
+        /// <see cref="BlazeMeterLocation"/> for a list of known public locations. You can also use a custom private location
+        /// like <pre>harbor-5b0323b3c648be3b4c7b23c8</pre> or <pre>My Location</pre>.
+        /// <br/>
+        /// Use this method multiple times to specify several locations to generate load from multiple
+        /// locations in parallel.
+        /// <br/>
+        /// E.g:
+        /// <pre>{@code
+        ///  TestPlan(
+        ///    ...
+        ///  ).RunIn(new BlazeMeterEngine(bzToken)
+        ///    // this scenario will run 50% of the users in GCP us-east1 and the rest in us-west1
+        ///    .Location(BlazeMeterLocation.GCP_US_EAST_1, 0.5)
+        ///    .Location(BlazeMeterLocation.GCP_US_WEST_1, 0.5)
+        ///  );
+        /// }</pre>
+        /// <br/>
+        /// When no location is specified, then the default one will be used.
+        /// </summary>
+        /// <param name="location">specifies a location where to run test plans.</param>
+        /// <param name="weight">specifies the weight of this location over others. For instance, if you have
+        /// two locations one with weight 1 and the other 2, then the first one will get
+        /// 1/(2+1)=33% of TotalUsers and the other will get the rest of the users. In
+        /// general is easier to think in terms of percentages, for example for the same
+        /// sample set 33 and 67 as weights.</param>
+        /// <returns>the engine for further configuration or usage.</returns>
+        /// <see cref="BlazeMeterLocation"/>
+        public BlazeMeterEngine Location(string location, int weight)
+        {
+            __propsList.Add(new DslLocation(location, weight));
+            return this;
+        }
+
+        /// <summary>
         /// Specifies that the test run will use BlazeMeter debug run feature, not consuming credits but
         /// limited up to 10 threads and 5 minutes or 100 iterations.
         /// </summary>
@@ -258,6 +298,19 @@ namespace Abstracta.JmeterDsl.BlazeMeter
         {
             _useDebugRun = enable;
             return this;
+        }
+
+        internal class DslLocation : IDslProperty
+        {
+
+            internal readonly string _location;
+            internal readonly int _weight;
+
+            public DslLocation(string location, int weight)
+            {
+                _location = location;
+                _weight = weight;
+            }
         }
     }
 }

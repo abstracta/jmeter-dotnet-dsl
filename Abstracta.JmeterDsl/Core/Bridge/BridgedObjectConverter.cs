@@ -57,7 +57,7 @@ namespace Abstracta.JmeterDsl.Core.Bridge
             var ret = valueType.GetCustomAttribute<YamlTypeAttribute>()?.TagName;
             if (ret == null)
             {
-                ret = IsCoreElement(valueType) ? BuildSimpleTagName(valueType) : BuildCompleteTagName(valueType);
+                ret = IsCoreElement(valueType) || typeof(IDslProperty).IsAssignableFrom(valueType) ? BuildSimpleTagName(valueType) : BuildCompleteTagName(valueType);
             }
             return "!" + ret;
         }
