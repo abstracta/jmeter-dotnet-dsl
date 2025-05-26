@@ -9,3 +9,4 @@ Here we show some of them, but check [JmeterDsl](/Abstracta.JmeterDsl/JmeterDsl.
 <!-- @include: headers.md -->
 <!-- @include: multipart.md -->
 <!-- @include: cookies-and-cache.md -->
+<!-- @include: redirects.md -->

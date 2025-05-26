@@ -17,11 +17,13 @@ namespace Abstracta.JmeterDsl.Http
         private readonly List<HttpSamplerProperty> __propsList = new List<HttpSamplerProperty>();
         private string _method;
         private string _body;
+        private bool _followRedirects;
 
         public DslHttpSampler(string name, string url)
             : base(name)
         {
             _url = url;
+            _followRedirects = true;
         }
 
         /// <summary>
@@ -169,6 +171,23 @@ namespace Abstracta.JmeterDsl.Http
         public DslHttpSampler Header(string name, string value)
         {
             FindHeaders().Header(name, value);
+            return this;
+        }
+
+        /// <summary>
+        /// Allows enabling/disabling automatic request for redirects.
+        /// <para>
+        /// When a response is a redirection response (3xx status code with a Location header), the system
+        /// automatically generates a new request to the redirected destination registering the redirect
+        /// request as a sub sample. This method allows enabling/disabling such behavior.
+        /// </para>
+        /// </summary>
+        /// <param name="followRedirects">Sets either to enable or disable automatic redirects. By default,
+        /// redirects are automatically followed.</param>
+        /// <returns>The sampler for further configuration or usage.</returns>
+        public DslHttpSampler FollowRedirects(bool followRedirects)
+        {
+            _followRedirects = followRedirects;
             return this;
         }
 
