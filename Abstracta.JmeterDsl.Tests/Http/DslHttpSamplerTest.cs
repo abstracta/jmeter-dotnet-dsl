@@ -216,11 +216,11 @@ namespace Abstracta.JmeterDsl.Http
 
             _wiremock.Should()
                 .HaveReceivedACall()
-                .WithPath(_redirectPath);
+                .AtUrl(_wiremock.Url + _redirectPath);
 
             _wiremock.Should()
                 .HaveReceivedACall()
-                .WithPath(_finalDestinationPath);
+                .AtUrl(_wiremock.Url + _finalDestinationPath);
         }
 
         [Test]
@@ -238,7 +238,7 @@ namespace Abstracta.JmeterDsl.Http
 
             _wiremock.Should()
                 .HaveReceivedACall()
-                .WithPath(_redirectPath);
+                .AtUrl(_wiremock.Url + _redirectPath);
 
             var finalDestinationCallCount = _wiremock.LogEntries.Count(x => x.RequestMessage.Path == _finalDestinationPath);
             Assert.That(finalDestinationCallCount, Is.EqualTo(0), $"An unexpected request was received at {_finalDestinationPath}.");

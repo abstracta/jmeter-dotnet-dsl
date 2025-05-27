@@ -69,37 +69,6 @@ namespace Abstracta.JmeterDsl
             return new AndConstraint<WireMockAssertions>(instance);
         }
 
-        public static AndConstraint<WireMockAssertions> WithPath(this WireMockAssertions instance, string path) =>
-            WithPath(instance, request => string.Equals(request.Path, path, StringComparison.OrdinalIgnoreCase), path);
-
-        private static AndConstraint<WireMockAssertions> WithPath(WireMockAssertions instance, Func<IRequestMessage, bool> predicate, object path)
-        {
-            var requestsField = GetPrivateField("_requestMessages", instance);
-            var requests = (IReadOnlyList<IRequestMessage>)requestsField.GetValue(instance)!;
-            var callsCount = (int?)GetPrivateField("_callsCount", instance).GetValue(instance);
-            Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> filter = requests => requests.Where(predicate).ToList();
-            Func<IReadOnlyList<IRequestMessage>, bool> condition = requests => (callsCount is null && filter(requests).Any()) || callsCount == filter(requests).Count;
-
-            Execute.Assertion
-                .BecauseOf(string.Empty, Array.Empty<object>())
-                .Given(() => requests)
-                .ForCondition(requests => callsCount == 0 || requests.Any())
-                .FailWith(
-                    "Expected {context:wiremockserver} to have been called using path " + "{0}{reason}, but no calls were made.",
-                    path
-                )
-                .Then
-                .ForCondition(condition)
-                .FailWith(
-                    "Expected {context:wiremockserver} to have been called using path " + "{0}{reason}, but didn't find it among the paths {1}.",
-                    _ => path,
-                    requests => requests.Select(request => request.Path)
-                );
-
-            requestsField.SetValue(instance, filter(requests).ToList());
-            return new AndConstraint<WireMockAssertions>(instance);
-        }
-
         public static AndConstraint<WireMockAssertions> WithBody(this WireMockAssertions instance, Regex bodyRegex) =>
             WithBody(instance, request => bodyRegex.IsMatch(request.Body), bodyRegex);
     }
