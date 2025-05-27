@@ -1,8 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using WireMock.FluentAssertions;
 using WireMock.RequestBuilders;
@@ -18,6 +21,8 @@ namespace Abstracta.JmeterDsl.Http
         private static readonly string _contentTypeHeader = "Content-Type";
         private static readonly string _multipartBoundaryPattern = "[\\w-]+";
         private static readonly string _crln = "\r\n";
+        private string _redirectPath = "/redirect";
+        private string _finalDestinationPath = "/final-destination";
         private WireMockServer _wiremock;
 
         [SetUp]
@@ -187,6 +192,56 @@ namespace Abstracta.JmeterDsl.Http
                 .WithHeader(_contentTypeHeader, new Regex("multipart/form-data; boundary=" + _multipartBoundaryPattern))
                 .And
                 .WithBody(new Regex(BuildMultiPartBodyPattern(part1Name, part1Value, part1Encoding, part2Name, part2File, part2Encoding)));
+        }
+
+        private void SetupHttpResponseRedirect()
+        {
+            _wiremock.Given(Request.Create().WithPath(_redirectPath))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(302)
+                    .WithHeader("Location", _finalDestinationPath));
+        }
+
+        [Test]
+        public void ShouldFollowRedirectsByDefault()
+        {
+            SetupHttpResponseRedirect();
+
+            TestPlan(
+                ThreadGroup(1, 1,
+                    HttpSampler(_wiremock.Url + _redirectPath).
+                        Method(HttpMethod.Get.Method)
+                )
+            ).Run();
+
+            _wiremock.Should()
+                .HaveReceivedACall()
+                .AtUrl(_wiremock.Url + _redirectPath);
+
+            _wiremock.Should()
+                .HaveReceivedACall()
+                .AtUrl(_wiremock.Url + _finalDestinationPath);
+        }
+
+        [Test]
+        public void ShouldNotFollowRedirectsByDefault()
+        {
+            SetupHttpResponseRedirect();
+
+            TestPlan(
+                ThreadGroup(1, 1,
+                    HttpSampler(_wiremock.Url + _redirectPath).
+                        Method(HttpMethod.Get.Method)
+                        .FollowRedirects(false)
+                )
+            ).Run();
+
+            _wiremock.Should()
+                .HaveReceivedACall()
+                .AtUrl(_wiremock.Url + _redirectPath);
+
+            var finalDestinationCallCount = _wiremock.LogEntries.Count(x => x.RequestMessage.Path == _finalDestinationPath);
+            Assert.That(finalDestinationCallCount, Is.EqualTo(0), $"An unexpected request was received at {_finalDestinationPath}.");
         }
 
         private string BuildMultiPartBodyPattern(string part1Name, string part1Value, MediaTypeHeaderValue part1Encoding, string part2Name, string part2File, MediaTypeHeaderValue part2Encoding)
