@@ -3,7 +3,7 @@
 By including the following package:
 
 ```powershell
-dotnet add package Abstracta.JmeterDsl.BlazeMeter --version 0.7
+dotnet add package Abstracta.JmeterDsl.BlazeMeter --version 0.8
 ```
 
 You can easily run a JMeter test plan at scale in [BlazeMeter](https://www.blazemeter.com/) like this:

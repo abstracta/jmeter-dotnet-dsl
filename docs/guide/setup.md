@@ -3,7 +3,7 @@
 To use the DSL just include it in your project:
 
 ```powershell
-dotnet add package Abstracta.JmeterDsl --version 0.7
+dotnet add package Abstracta.JmeterDsl --version 0.8
 ```
 
 ::: tip
