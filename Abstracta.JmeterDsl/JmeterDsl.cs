@@ -386,6 +386,26 @@ namespace Abstracta.JmeterDsl
             => new DslRegexExtractor(variableName, regex);
 
         /// <summary>
+        /// Builds an Extractor which allows using JMESPath or JSONPath to extract part of a JSON
+        /// response.
+        /// <br/>
+        /// This method provides a simple default implementation with required settings, but more settings
+        /// are provided by returned <see cref="DslJsonExtractor"/>.
+        /// <br/>
+        /// By default, uses JMESPath for queries and when no match is found, the variable will be assigned
+        /// to empty string. On the other hand, when a match is found, it will by default store the first
+        /// match.
+        /// </summary>
+        /// <param name="variableName">is the name of the variable to be used to store the extracted value to.</param>
+        /// <param name="query">specifies JMESPath (or JSONPath, if <see cref="DslJsonExtractor.QueryLanguage"/> specifies so)
+        /// to extract the value.</param>
+        /// <returns>the JSON Extractor which can be used to define additional settings to use when
+        /// extracting (like defining match number, scope, etc.).</returns>
+        /// <seealso cref="DslJsonExtractor"/>
+        public static DslJsonExtractor JsonExtractor(string variableName, string query)
+            => new DslJsonExtractor(variableName, query);
+
+        /// <summary>
         /// Builds a Response Assertion to be able to check that obtained sample result is the expected
         /// one.
         /// <br/>
