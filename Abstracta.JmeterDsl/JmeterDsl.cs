@@ -338,6 +338,30 @@ namespace Abstracta.JmeterDsl
             new DslJsr223PreProcessor(name, script);
 
         /// <summary>
+        /// Builds a JSR223 Post Processor which allows including custom logic to process sample results.
+        /// <br/>
+        /// This post processor is very powerful, and lets you alter sample results, jmeter context and
+        /// implement any kind of custom logic that you may think.
+        /// </summary>
+        /// <param name="script">contains the script to be executed by the post processor. By default, this will be
+        ///               a groovy script, but you can change it by setting the language property in the
+        ///               returned post processor.</param>
+        /// <returns>the JSR223 Post Processor instance</returns>
+        /// <seealso cref="DslJsr223PostProcessor"/>
+        public static DslJsr223PostProcessor Jsr223PostProcessor(string script) =>
+            Jsr223PostProcessor(null, script);
+
+        /// <summary>
+        /// Same as <see cref="Jsr223PostProcessor(string)"/> but allowing to set a name on the post processor.
+        /// <br/>
+        /// The name is used as logger name which allows configuring log level, appender, etc., for the
+        /// post processor.
+        /// </summary>
+        /// <seealso cref="Jsr223PostProcessor(string)"/>
+        public static DslJsr223PostProcessor Jsr223PostProcessor(string name, string script) =>
+            new DslJsr223PostProcessor(name, script);
+
+        /// <summary>
         /// Builds a Regex Extractor which allows using regular expressions to extract different parts of a
         /// sample result (request or response).
         /// <br/>
