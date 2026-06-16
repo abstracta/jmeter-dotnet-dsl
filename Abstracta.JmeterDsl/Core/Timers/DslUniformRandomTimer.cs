@@ -16,8 +16,8 @@ namespace Abstracta.JmeterDsl.Core.Timers
     /// </summary>
     public class DslUniformRandomTimer : BaseTimer
     {
-        private TimeSpan _minimum;
-        private TimeSpan _maximum;
+        private readonly TimeSpan _minimum;
+        private readonly TimeSpan _maximum;
 
         public DslUniformRandomTimer(TimeSpan minimum, TimeSpan maximum)
             : base(null)
