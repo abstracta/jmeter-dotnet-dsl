@@ -41,7 +41,7 @@ namespace Abstracta.JmeterDsl.Core.PostProcessors
                         HttpSampler(_wiremock.Url + path)
                             .Children(extractor),
                         HttpSampler(_wiremock.Url + path + userQueryParameter + "${EXTRACTED_USER}")
-                    )).ShowInGui();
+                    )).Run();
             _wiremock.Should().HaveReceivedACall()
                 .AtUrl(_wiremock.Url + path + userQueryParameter + user);
         }
