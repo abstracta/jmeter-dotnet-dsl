@@ -28,5 +28,23 @@ namespace Abstracta.JmeterDsl.Core.ThreadGroups
             ).Run();
             Assert.That(stats.Duration, Is.GreaterThanOrEqualTo(duration));
         }
+
+        [Test]
+        public void ShouldStartNextIterationWhenSamplerFailsAndStartNextIterationActionConfigured()
+        {
+            var stats = TestPlan(
+                ThreadGroup(threads: 1, iterations: 2,
+                    DummySampler("first")
+                        .Successful(false),
+                    DummySampler("second")
+                ).SampleErrorAction(BaseThreadGroup<DslThreadGroup>.DslSampleErrorAction.StartNextIteration)
+            ).Run();
+            Assert.Multiple(() =>
+            {
+                Assert.That(stats.Overall.SamplesCount, Is.EqualTo(2));
+                Assert.That(stats.Overall.ErrorsCount, Is.EqualTo(2));
+                Assert.That(stats.Labels.ContainsKey("second"), Is.False);
+            });
+        }
     }
 }
