@@ -25,6 +25,7 @@ namespace Abstracta.JmeterDsl.Azure
         private string _testName = "jmeter-dotnet-dsl";
         private TimeSpan? _testTimeout;
         private int? _engines;
+        private bool? _splitCsvsBetweenEngines;
 
         /// <summary>
         /// Builds a new AzureEngine from a given string containing tenant id, client id and client secrets
@@ -187,6 +188,21 @@ namespace Abstracta.JmeterDsl.Azure
         public AzureEngine Engines(int count)
         {
             _engines = count;
+            return this;
+        }
+
+        /// <summary>
+        /// Allows to enable/disable splitting provided CSV files between test engines.
+        /// <br/>
+        /// Enabling the split allows to use a separate set of records in each engine.
+        /// </summary>
+        /// <param name="enabled">specifies to split or not CSV files between engines. By default, it is set to
+        /// false.</param>
+        /// <returns>the engine for further configuration or usage.</returns>
+        /// <seealso cref="Engines(int)"/>
+        public AzureEngine SplitCsvsBetweenEngines(bool enabled)
+        {
+            _splitCsvsBetweenEngines = enabled;
             return this;
         }
     }

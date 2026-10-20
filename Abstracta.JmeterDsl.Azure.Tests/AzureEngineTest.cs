@@ -34,5 +34,24 @@ namespace Abstracta.JmeterDsl.Azure.Tests
             ).RunIn(new AzureEngine(Environment.GetEnvironmentVariable("AZURE_CREDS")));
             Assert.That(stats.Overall.ErrorsCount, Is.EqualTo(1));
         }
+
+        [Test]
+        public void ShouldUseDifferentCsvRecordsInEachEngineWhenSplitCsvsBetweenEngines()
+        {
+            var stats = TestPlan(
+                CsvDataSet("users.csv")
+                    .VariableNames("USER"),
+                ThreadGroup(1, 1,
+                    DummySampler("${USER}", "ok")
+                )
+            ).RunIn(new AzureEngine(Environment.GetEnvironmentVariable("AZURE_CREDS"))
+                .Engines(2)
+                .SplitCsvsBetweenEngines(true));
+            Assert.Multiple(() =>
+            {
+                Assert.That(stats.Labels["user1"].SamplesCount, Is.EqualTo(1));
+                Assert.That(stats.Labels["user2"].SamplesCount, Is.EqualTo(1));
+            });
+        }
     }
 }
