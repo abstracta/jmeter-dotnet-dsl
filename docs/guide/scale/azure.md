@@ -55,6 +55,10 @@ unnecessary waits when there is some unexpected issue with Azure Load Testing ex
 :::
 
 ::: tip
+When running a test plan with multiple engines (`Engines(n)`) and CSV data sets, each engine uses by default the complete CSV files. If you want each engine to use a different set of records from the CSV files, you can use `SplitCsvsBetweenEngines(true)`, which instructs Azure Load Testing to split the CSV files evenly between the engines.
+:::
+
+::: tip
 If you want to get debug logs for HTTP calls to Azure API, you can include the following setting to an existing `log4j2.xml` configuration file:
 ```xml
 <Logger name="us.abstracta.jmeter.javadsl.azure.AzureClient" level="DEBUG"/>
